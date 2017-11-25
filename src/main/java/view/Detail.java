@@ -5,17 +5,51 @@
  */
 package view;
 
+import info.movito.themoviedbapi.model.Artwork;
+import info.movito.themoviedbapi.model.ArtworkType;
+import info.movito.themoviedbapi.model.Genre;
+import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.ProductionCompany;
+import info.movito.themoviedbapi.model.people.PersonCast;
+import java.awt.BorderLayout;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+
 /**
  *
  * @author ngohoa
  */
 public class Detail extends javax.swing.JFrame {
+    DefaultListModel<String> model;
+    private MovieDb movie;
 
     /**
      * Creates new form Detail
      */
-    public Detail() {
+    public Detail(MovieDb movie) {
+        model = new DefaultListModel<>();
+        this.movie = movie;
         initComponents();
+        initMovieDetails();
+    }
+
+    private Detail() {
+        initComponents();
+
     }
 
     /**
@@ -28,54 +62,46 @@ public class Detail extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        titleLab = new javax.swing.JLabel();
+        posterPanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextAreaInfo = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Film: ");
 
-        jLabel2.setText("jLabel2");
+        titleLab.setText("jLabel2");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        posterPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        posterPanel.setPreferredSize(new java.awt.Dimension(250, 375));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 169, Short.MAX_VALUE)
+        javax.swing.GroupLayout posterPanelLayout = new javax.swing.GroupLayout(posterPanel);
+        posterPanel.setLayout(posterPanelLayout);
+        posterPanelLayout.setHorizontalGroup(
+            posterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 248, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 187, Short.MAX_VALUE)
+        posterPanelLayout.setVerticalGroup(
+            posterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 373, Short.MAX_VALUE)
         );
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
 
         jLabel3.setText("info:");
-
-        jLabel4.setText("poster");
-
-        jLabel5.setText("my rate:");
-
-        jTextField1.setText("jTextField1");
-
-        jLabel6.setText("/10");
 
         jButton1.setText("Back");
 
         jButton2.setText("Ok, i like it");
+
+        jTextAreaInfo.setColumns(20);
+        jTextAreaInfo.setLineWrap(true);
+        jTextAreaInfo.setRows(5);
+        jTextAreaInfo.setEnabled(false);
+        jScrollPane1.setViewportView(jTextAreaInfo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -83,32 +109,27 @@ public class Detail extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(56, 56, 56)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel5)
-                        .addGap(34, 34, 34)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(7, 7, 7)
-                        .addComponent(jLabel6)))
-                .addContainerGap(62, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(61, 61, 61)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
-                .addGap(91, 91, 91))
+                        .addComponent(titleLab))
+                    .addComponent(posterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(70, 70, 70)
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton2))
+                            .addComponent(jLabel3))))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,24 +137,21 @@ public class Detail extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel5)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
-                .addGap(11, 11, 11)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(2, 2, 2)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                    .addComponent(titleLab)
+                    .addComponent(jLabel3))
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1)
-                        .addComponent(jButton2)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(407, 407, 407)
+                        .addComponent(jLabel4))
+                    .addComponent(posterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(jButton2))))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         pack();
@@ -178,14 +196,109 @@ public class Detail extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextArea jTextAreaInfo;
+    private javax.swing.JPanel posterPanel;
+    private javax.swing.JLabel titleLab;
     // End of variables declaration//GEN-END:variables
+
+    private void initMovieDetails() {
+        titleLab.setText(movie.getTitle());
+        //lấy thông tin phim
+        List<Genre> genres = movie.getGenres();
+        List<PersonCast> personCasts = movie.getCast();
+        String overview = movie.getOverview();
+        List<ProductionCompany> producers = movie.getProductionCompanies();
+        String homePage = movie.getHomepage();
+        String releaseDate = movie.getReleaseDate();
+        
+        float pop = movie.getPopularity();
+        int voteCount = movie.getVoteCount();
+        //thể loại
+        String genre = "Genre: ";
+        for (Genre g:genres){
+            genre += g.getName();
+            genre += ", ";
+        }
+        genre = genre.substring(0, genre.length()-2);
+        //thời gian phát hành
+        releaseDate = "Release date: "+releaseDate;
+        //hãng sx
+        String productionComp = "Production Companies: ";
+        for (ProductionCompany pc:producers){
+            productionComp += pc.getName();
+            productionComp += ", ";
+        }
+        productionComp = productionComp.substring(0, productionComp.length()-2);
+        //rating
+        String popu = "Popularity: "+pop;
+        //số vote
+        String vote = "Vote count: "+voteCount;
+        String overviewTitle = "Overview:";
+        //dien vien
+        String castsTitle = "Casts:";
+        String castContent = "";
+        for (PersonCast pc:personCasts){
+            castContent += pc.getName() + " - " + pc.getCharacter() +"\n";
+            
+        }
+        //homepage
+        String home = "Homepage: "+homePage;
+        //
+        jTextAreaInfo.setText(genre+"\n"
+                +releaseDate+"\n"
+                +productionComp+"\n"
+                +popu+"\n"
+                +vote+"\n"
+                +overviewTitle+"\n"
+                +overview+"\n"
+                +castsTitle+"\n"
+                +castContent+"\n"+home);
+        
+        
+
+        
+        
+//        List<Artwork> artworks = movie.getImages(ArtworkType.POSTER);
+//        try {
+//
+////            URL url = new URL("https://image.tmdb.org/t/p/w500" + artworks.get(0).getFilePath());
+//            String imageUrl = "https://image.tmdb.org/t/p/w500" + artworks.get(0).getFilePath();
+////            String destinationFile = "image.jpg";
+//
+////            saveImage(imageUrl, destinationFile);
+//            File sourceimage = new File(destinationFile);
+//            Image image = ImageIO.read(sourceimage);
+////            Image image = ImageIO.read(url);
+////            Image scaledImage = image.getScaledInstance(posterPanel.getWidth(), posterPanel.getHeight(), Image.SCALE_SMOOTH);
+//
+//            JLabel picLabel = new JLabel(new ImageIcon(image));
+//            posterPanel.add(picLabel);
+//            
+////            posterPanel.set
+////            posterPanel.repaint();
+//        } catch (IOException ex) {
+//            System.out.println(artworks.get(0).getFilePath());
+//            Logger.getLogger(Detail.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+    }
+
+//    public static void saveImage(String imageUrl, String destinationFile) throws IOException {
+//        URL url = new URL(imageUrl);
+//        InputStream is = url.openStream();
+//        OutputStream os = new FileOutputStream(destinationFile);
+//
+//        byte[] b = new byte[2048];
+//        int length;
+//
+//        while ((length = is.read(b)) != -1) {
+//            os.write(b, 0, length);
+//        }
+//
+//        is.close();
+//        os.close();
+//    }
+
 }
