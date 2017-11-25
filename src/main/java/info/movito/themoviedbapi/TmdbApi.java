@@ -11,10 +11,14 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 
 import static info.movito.themoviedbapi.TmdbMovies.MovieMethod.*;
-
+import info.movito.themoviedbapi.model.core.MovieResultsPage;
+import info.movito.themoviedbapi.model.keywords.Keyword;
 
 /**
- * The MovieDb API <p> This is for version 3 of the API as specified here: http://help.themoviedb.org/kb/api/about-3
+ * The MovieDb API
+ * <p>
+ * This is for version 3 of the API as specified here:
+ * http://help.themoviedb.org/kb/api/about-3
  *
  * @author Holger Brandl
  */
@@ -30,11 +34,12 @@ public class TmdbApi {
     private UrlReader urlReader;
 
     /**
-     * Automatically retry after indicated amount of seconds if we hit the request limit.
-     * See http://docs.themoviedb.apiary.io/introduction/request-rate-limiting for details
+     * Automatically retry after indicated amount of seconds if we hit the
+     * request limit. See
+     * http://docs.themoviedb.apiary.io/introduction/request-rate-limiting for
+     * details
      */
     private boolean autoRetry = true;
-
 
     /**
      * The language used for all language supporting requests to tmdb.
@@ -43,7 +48,6 @@ public class TmdbApi {
     public TmdbApi(String apiKey) {
         this(apiKey, new WebBrowser(), true);
     }
-
 
     public TmdbApi(String apiKey, UrlReader urlReader, boolean autoRetry) {
         this.urlReader = urlReader;
@@ -59,15 +63,14 @@ public class TmdbApi {
         }
     }
 
-
     /**
      * Uses the instance's api key to request information from api.tmdb.org.
      * <p/>
-     * Depending on the <code>autoRetry</code> setting this method will stall and internally recurse until the request was  successfully
-     * processed.
+     * Depending on the <code>autoRetry</code> setting this method will stall
+     * and internally recurse until the request was successfully processed.
      *
-     * @param apiUrl        The url to be requested
-     * @param jsonBody      can be null
+     * @param apiUrl The url to be requested
+     * @param jsonBody can be null
      * @param requestMethod
      * @return
      */
@@ -80,11 +83,8 @@ public class TmdbApi {
 //        if (isNotBlank(language)) {
 //            apiUrl.addParam(AbstractApiElement.PARAM_LANGUAGE, language);
 //        }
-
-
         return requestWebPageInternal(apiUrl, jsonBody, requestMethod);
     }
-
 
     private String requestWebPageInternal(ApiUrl apiUrl, String jsonBody, RequestMethod requestMethod) {
         try {
@@ -101,7 +101,6 @@ public class TmdbApi {
         }
     }
 
-
 //    public void setLanguage(String language) {
 //        this.language = language;
 //    }
@@ -110,8 +109,6 @@ public class TmdbApi {
 //    public String getLanguage() {
 //        return language;
 //    }
-
-
     /**
      * Get the API key that is to be used by this instance
      */
@@ -119,11 +116,9 @@ public class TmdbApi {
         return apiKey;
     }
 
-
     public TmdbConfiguration getConfiguration() {
         return tmdbConfig;
     }
-
 
     public List<Timezone> getTimezones() {
         return new TmdbTimezones(this).getTimezones();
@@ -132,111 +127,102 @@ public class TmdbApi {
     //
     // accessors for the different parts of the api
     //
-
-
     public TmdbAccount getAccount() {
         return new TmdbAccount(this);
     }
-
 
     public TmdbLists getLists() {
         return new TmdbLists(this);
     }
 
-
     public TmdbMovies getMovies() {
         return new TmdbMovies(this);
     }
-
 
     public TmdbSearch getSearch() {
         return new TmdbSearch(this);
     }
 
-
     public TmdbGenre getGenre() {
         return new TmdbGenre(this);
     }
-
 
     public TmdbCompany getCompany() {
         return new TmdbCompany(this);
     }
 
-
     public TmdbCollections getCollections() {
         return new TmdbCollections(this);
     }
-
 
     public TmdbPeople getPeople() {
         return new TmdbPeople(this);
     }
 
-
     public TmdbAuthentication getAuthentication() {
         return new TmdbAuthentication(this);
     }
-
 
     public TmdbChanges getChanges() {
         return new TmdbChanges(this);
     }
 
-
     public TmdbDiscover getDiscover() {
         return new TmdbDiscover(this);
     }
-
 
     public List<JobDepartment> getJobs() {
         return new TmdbJobs(this).getJobs();
     }
 
-
     public TmdbKeywords getKeywords() {
         return new TmdbKeywords(this);
     }
-
 
     public TmdbReviews getReviews() {
         return new TmdbReviews(this);
     }
 
-
     public TmdbTV getTvSeries() {
         return new TmdbTV(this);
     }
-
 
     public TmdbTvSeasons getTvSeasons() {
         return new TmdbTvSeasons(this);
     }
 
-
     public TmdbTvEpisodes getTvEpisodes() {
         return new TmdbTvEpisodes(this);
     }
-
 
     public TmdbFind getFind() {
         return new TmdbFind(this);
     }
 
-
     /**
      * Usage example
      */
     public static void main(String[] args) {
-        String apiKey = System.getenv("apikey");
+        String apiKey = "a525c27ce84ca32d09a5c18b221e6717";
         TmdbApi tmdbApi = new TmdbApi(apiKey);
 
         TmdbMovies movies = tmdbApi.getMovies();
-//        List<MovieDb> en = movies.getTopRatedMovies("en", 0).getResults();
-//        List<MovieDb> en2 = movies.getNowPlayingMovies("en", 0).getResults();
-        MovieDb movie = movies.getMovie(293660, "en", credits, videos, releases, images, similar, reviews);
-        List<Artwork> images = movie.getImages();
-        System.out.println(movie);
+        TmdbSearch search = tmdbApi.getSearch();
+        // điền tên phim vào đây
+        String movieName = "dead pool";
+        MovieResultsPage mrp = search.searchMovie(movieName, 0, null, true, 0);
+        List<MovieDb> list = mrp.getResults();
+        for (MovieDb mv : list) {
+            System.out.println(mv.getTitle() + mv.getId());
+            MovieDb movie = movies.getMovie(mv.getId(), "en", keywords);
+            
+            List<Keyword> keywords = movie.getKeywords();
+            for (Keyword k : keywords) {
+                System.out.println(k.getName());
+            }
+//            
+        }
+
     }
 
 }
