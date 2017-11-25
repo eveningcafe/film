@@ -5,17 +5,36 @@
  */
 package view;
 
+import info.movito.themoviedbapi.TmdbApi;
+import info.movito.themoviedbapi.TmdbMovies;
+import static info.movito.themoviedbapi.TmdbMovies.MovieMethod.*;
+import info.movito.themoviedbapi.TmdbSearch;
+import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.core.MovieResultsPage;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author ngohoa
  */
 public class Result extends javax.swing.JFrame {
 
+    DefaultListModel<String> model;
+    List<MovieDb> movieDbs;
+
     /**
      * Creates new form Result
      */
-    public Result() {
+    public Result(List<String> movies) {
         initComponents();
+        model = new DefaultListModel<>();
+        movieDbs = checkMovies(movies);
+        for (MovieDb mv : movieDbs) {
+            model.addElement(mv.getTitle());
+        }
+        mvList.setModel(model);
     }
 
     /**
@@ -29,8 +48,8 @@ public class Result extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
+        mvList = new javax.swing.JList<>();
+        detailButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -38,16 +57,33 @@ public class Result extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Ubuntu", 3, 15)); // NOI18N
         jLabel1.setText("We recommend you films:");
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        mvList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        mvList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        mvList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                mvListValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(mvList);
 
-        jButton1.setText("detail");
+        detailButton.setText("Detail");
+        detailButton.setEnabled(false);
+        detailButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                detailButtonActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("not hose, ask me more");
+        jButton2.setText("Not those, ask me more");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -64,10 +100,10 @@ public class Result extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(78, 78, 78)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(detailButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(40, 40, 40)
                         .addComponent(jButton2)))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -78,13 +114,30 @@ public class Result extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(detailButton)
                     .addComponent(jButton2))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void detailButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_detailButtonActionPerformed
+        // TODO add your handling code here:
+        int index = mvList.getSelectedIndex();
+        Detail detailForm = new Detail(movieDbs.get(index));
+        detailForm.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_detailButtonActionPerformed
+
+    private void mvListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_mvListValueChanged
+        // TODO add your handling code here:
+        detailButton.setEnabled(true);
+    }//GEN-LAST:event_mvListValueChanged
 
     /**
      * @param args the command line arguments
@@ -116,16 +169,38 @@ public class Result extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Result().setVisible(true);
+                //test
+                List<String> movies = new ArrayList();
+                movies.add("dead pool");
+                movies.add("Wonder woman");
+                movies.add("3 idiots");
+                new Result(movies).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton detailButton;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<String> mvList;
     // End of variables declaration//GEN-END:variables
+
+    private List<MovieDb> checkMovies(List<String> movies) {
+        List<MovieDb> result = new ArrayList();
+        String apiKey = "a525c27ce84ca32d09a5c18b221e6717";
+        TmdbApi tmdbApi = new TmdbApi(apiKey);
+
+        TmdbMovies tmdbMovies = tmdbApi.getMovies();
+        TmdbSearch tmdbSearch = tmdbApi.getSearch();
+        for (String mv : movies) {
+            MovieResultsPage mrp = tmdbSearch.searchMovie(mv, 0, null, true, 0);
+            List<MovieDb> list = mrp.getResults();
+            MovieDb first = tmdbMovies.getMovie(list.get(0).getId(), "en", alternative_titles, credits, images, keywords, releases);
+            result.add(first);
+        }
+
+        return result;
+    }
 }
